@@ -234,7 +234,32 @@
     regexp: 'ext-rtp-ip'
     line: <param name="ext-rtp-ip" value="$${external_rtp_ip}"/>
   when: cloud_provider != 'none'
-
+  
+- name: make some symlinks 1
+  file:
+    src: "/usr/local/freeswitch/bin/{{ item.path }}"
+    dest: "/usr/bin/{{ item.dest }}"
+    state: link
+  with_items:
+    - { path: 'freeswitch', dest: 'freeswitch' }
+    - { path: 'fs_cli', dest: 'fs_cli' }
+    
+- name: make some symlinks 2
+  file:
+    src: "/usr/local/freeswitch/{{ item.path }}/"
+    dest: "/var/{{ item.dest }}/freeswitch"
+    state: link
+  with_items:
+    - { path: 'log', dest: 'log' }
+    - { path: 'lib', dest: 'lib' }
+    - { path: 'run', dest: 'run' }
+   
+- name: make some symlinks 3
+  file:
+    src: "/usr/local/freeswitch/conf/"
+    dest: "/etc/freeswitch"
+    state: link
+    
 - name: unmask freeswitch service
   shell: systemctl unmask freeswitch
 
